@@ -1,37 +1,31 @@
 from client import count, _pretty_print
-from matplotlib import pyplot
-
+from numpy.random import laplace
+import numpy as np
 import sys
-
-# Return a random sample from laplace with mean/loc = mu and scale/spread b.
-def laplace(mu, b):
-  # TODO: implement laplace sampling or use numpy's laplace.
-  return "?"
+from matplotlib import pyplot
 
 # Return a noised histogram that is epsilon-dp.
 def dp_histogram(epsilon):
-  # TODO: Find out the parameters for the noise distribution.
-  sensitivity = "?"
-  mu = "?"
-  b = "?"
+    sensitivity = 1  # 
+    mu = 0  # Mean for the Laplace distribution
+    b = sensitivity / epsilon  # Scale for the Laplace distribution
   
-  # Get the exact histogram without noise.
-  headers, rows = count(["age", "music"], False)
+    # Get the exact histogram without noise.
+    headers, rows = count(["age", "music"], False)
 
-  # Iterate over counts and apply the laplace noise.
-  noised_rows = []
-  for (age, music, value) in rows:
-    # TODO: compute the noised value.
-    # TODO: round the noised_value to the closest integer.
-    noised_value = "?"
+    # Iterate over counts and apply the Laplace noise.
+    noised_rows = []
+    for (age, music, value) in rows:
+        # Compute the noised value.
+        noise = laplace(mu, b)
+        # Round the noised_value to the closest integer.
+        noised_value = int(round(value + noise))
 
-    # Append the noised value and associated group by labels.
-    noised_rows.append((age, music, noised_value))  
+        # Append the noised value and associated group by labels.
+        noised_rows.append((age, music, noised_value))  
 
-  return headers, noised_rows
+    return headers, noised_rows
 
-# Plot the frequency of counts for the first group
-# (age 0 and Hip Hop).
 def plot(epsilon):
   ITERATIONS = 150
 
@@ -65,8 +59,8 @@ if __name__ == "__main__":
   _pretty_print(headers, rows)
 
   # Plotting code.
-  '''
+  
   print("Plotting, this may take a minute ...")
   plot(epsilon)
   print("Plot saved at 'dp-plot.png'")
-  '''
+  
